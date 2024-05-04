@@ -1,0 +1,18 @@
+CREATE TABLE IF NOT EXISTS BikePaths (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  length INTEGER NOT NULL,
+  difficulty TEXT NOT NULL,
+  description TEXT NOT NULL,
+  image TEXT NOT NULL,
+  created_at REAL NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS BikeTrips (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL,
+  length INTEGER NOT NULL,
+  difficulty TEXT NOT NULL,
+  description TEXT NOT NULL,
+  created_at REAL NOT NULL
+);

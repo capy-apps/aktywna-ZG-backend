@@ -6,7 +6,8 @@
 		"deploy": "wrangler publish",
 		"dev": "wrangler dev --local",
 		"test": "vitest",
-		"start-stackblitz": "WRANGLER_SEND_METRICS=false wrangler dev index.js --local"
+		"start-stackblitz": "WRANGLER_SEND_METRICS=false wrangler dev index.js --local",
+		"db-setup": "wrangler d1 execute aktywna-zg --file=./schema.sql"
 	},
 	"dependencies": {
 		"itty-router": "^2.6.1"

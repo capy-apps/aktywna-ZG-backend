@@ -1,3 +1,8 @@
 name = "aktywna-zg"
 main = "src/index.ts"
 compatibility_date = "2022-05-03"
+
+[[ d1_databases ]]
+binding = "DB"
+database_name = "aktywna-zg"
+database_id = "b905de50-8525-4e9a-b50c-1aaeacab43cf"
