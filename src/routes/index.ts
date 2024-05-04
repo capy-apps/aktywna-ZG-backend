@@ -1,9 +1,9 @@
 import { Router } from 'itty-router';
-import testRouter from './test';
+import mapRouter from './map';
 
 const router = Router({ base: '/' });
 
-router.all('/test/*', testRouter.handle);
+router.all('/map/*', mapRouter.handle);
 
 router.all('*', () => new Response("Hello from the root router!"));
 
