@@ -1,9 +1,9 @@
-import { Env } from '../../types';
-import { BikeTrips, BikeTripsRequest } from '../../types/BikeTrips';
-import { Location } from '../../types/Location';
-import { parseGpx } from '../../utils/gpx';
+import { Env } from '../types';
+import { BikeTrips, BikeTripsRequest } from '../types/BikeTrips';
+import { Location } from '../types/Location';
+import { parseGpx } from '../utils/gpx';
 
-export const mapService = async (env: Env) => {
+export const BikeTripsService = async (env: Env) => {
 	const getAllBikeTrips = async (): Promise<Response> => {
 		const query = env.DB.prepare('SELECT * FROM BikeTrips');
 		const { results } = await query.all<BikeTrips>();
@@ -58,8 +58,6 @@ export const mapService = async (env: Env) => {
         query.bind(bikeTripsId, location.latitute, location.longitude)
       ),
     ]);
-
-    console.log(rows[0].results);
 
     return Response.json({ message: 'Locations added successfully' });
   }
