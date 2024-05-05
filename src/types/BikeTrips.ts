@@ -1,6 +1,6 @@
 import { Location } from "./Location";
 
-export interface BikePath {
+export interface BikeTrips {
   id: number;
   name: string;
   length: number;
@@ -10,9 +10,9 @@ export interface BikePath {
   created_at: number;
 }
 
-export interface BikePathRequest extends Omit<BikePath, 'id' | 'created_at'> {}
+export interface BikeTripsRequest extends Omit<BikeTrips, 'id' | 'created_at'> {}
 
-export interface BikePathLocation extends Location {
+export interface BikeTripsLocation extends Location {
   id: number;
-  path_id: number;
+  trip_id: number;
 }

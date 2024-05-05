@@ -1,11 +1,14 @@
+DROP TABLE IF EXISTS BikePathLocations;
+DROP TABLE IF EXISTS BikePaths;
+DROP TABLE IF EXISTS BikeTripLocations;
+DROP TABLE IF EXISTS BikeTrips;
+DROP TABLE IF EXISTS BikeRepairStations;
+DROP TABLE IF EXISTS Events;
+
 CREATE TABLE IF NOT EXISTS BikePaths (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
-  length INTEGER,
-  difficulty TEXT,
-  description TEXT,
-  image TEXT,
-  created_at REAL
+  length INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS BikePathLocations (
@@ -22,6 +25,7 @@ CREATE TABLE IF NOT EXISTS BikeTrips (
   length INTEGER,
   difficulty TEXT,
   description TEXT,
+  image TEXT,
   created_at REAL
 );
 
