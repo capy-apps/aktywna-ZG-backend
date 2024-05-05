@@ -15,11 +15,6 @@ bikePathsRouter.post('/', async (request, env) => {
   return await addBikePath(body);
 });
 
-bikePathsRouter.get('/:id', async (request, env) => {
-  const { getBikePath } = await BikePathsService(env);
-  return await getBikePath(Number(request.params.id));
-})
-
 bikePathsRouter.post('/gpx/:id', async (request, env) => {
   const file = await request.formData();
   const body = await file.get('file');

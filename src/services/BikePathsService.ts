@@ -1,30 +1,26 @@
 import { Env } from '../types';
-import { BikePaths, BikePathsRequest } from '../types/BikePaths';
-import { Location } from '../types/Location';
+import { BikePaths, BikePathsLocation, BikePathsRequest } from '../types/BikePaths';
 import { parseGpx } from '../utils/gpx';
 
 export const BikePathsService = async (env: Env) => {
 	const getAllBikePaths = async (): Promise<Response> => {
-		const query = env.DB.prepare('SELECT * FROM BikePaths');
-		const { results } = await query.all<BikePaths>();
-		return Response.json(results);
-	};
+		const bikePaths = env.DB.prepare('SELECT * FROM BikePaths');
+		const { results } = await bikePaths.all<BikePaths>();
 
-	const getBikePath = async (bikePathId: Number): Promise<Response> => {
-		const pathQuery = env.DB.prepare('SELECT * FROM BikePaths WHERE id = ?');
-		const bikePath = await pathQuery.bind(bikePathId).first<BikePaths>();
+		const bikePathLocations = env.DB.prepare('SELECT * FROM BikePathLocations');
+		const { results: locations } = await bikePathLocations.all<BikePathsLocation>();
 
-		const query = env.DB.prepare(
-			'SELECT latitude, longitude FROM BikePathLocations WHERE path_id = ?'
-		);
-		const { results: locationResults } = await query.bind(bikePathId).all<Location>();
+		const bikePathsWithLocations = results.map(path => ({
+			...path,
+			locations: locations
+				.filter(location => location.path_id === path.id)
+				.map(location => ({
+					latitude: location.latitude,
+					longitude: location.longitude,
+				})),
+		}));
 
-		const BikePathWithLocations = {
-			...bikePath,
-			locations: locationResults,
-		};
-
-		return Response.json(BikePathWithLocations);
+		return Response.json(bikePathsWithLocations);
 	};
 
 	const addBikePath = async (bikePath: BikePathsRequest): Promise<Response> => {
@@ -54,7 +50,6 @@ export const BikePathsService = async (env: Env) => {
 
 	return {
 		getAllBikePaths,
-		getBikePath,
 		addBikePath,
 		addBikePathLocation,
 	};

@@ -6,3 +6,10 @@ export interface BikePaths {
 }
 
 export interface BikePathsRequest extends Omit<BikePaths, 'id'> {}
+
+export interface BikePathsLocation {
+  id: number;
+  path_id: number;
+  latitude: number;
+  longitude: number;
+}
