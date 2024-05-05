@@ -5,7 +5,7 @@ export interface BikePaths {
   length: number;
 }
 
-export interface BikePathsRequest extends Omit<BikePaths, 'id'> {}
+export interface BikePathsRequest extends Omit<BikePaths, 'id' | 'length'> {}
 
 export interface BikePathsLocation {
   id: number;

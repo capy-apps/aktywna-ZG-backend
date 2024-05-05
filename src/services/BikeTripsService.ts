@@ -1,6 +1,7 @@
 import { Env } from '../types';
 import { BikeTrips, BikeTripsRequest } from '../types/BikeTrips';
 import { Location } from '../types/Location';
+import { calculateTotalDistance } from '../utils/distance';
 import { parseGpx } from '../utils/gpx';
 
 export const BikeTripsService = async (env: Env) => {
@@ -27,11 +28,10 @@ export const BikeTripsService = async (env: Env) => {
 
 	const addBikeTrips = async (BikeTrips: BikeTripsRequest): Promise<Response> => {
 		const query = await env.DB.prepare(
-			'INSERT INTO BikeTrips (name, length, difficulty, description, image, created_at) VALUES (?1, ?2, ?3, ?4, ?5, ?6)'
+			'INSERT INTO BikeTrips (name, difficulty, description, image, created_at) VALUES (?1, ?2, ?3, ?4, ?5)'
 		)
 			.bind(
 				BikeTrips.name,
-				BikeTrips.length,
 				BikeTrips.difficulty,
 				BikeTrips.description,
 				BikeTrips.image,
@@ -48,14 +48,18 @@ export const BikeTripsService = async (env: Env) => {
 
   const addBikeTripsLocation = async (bikeTripsId: number, gpxContent: string): Promise<Response> => {
     const locations = parseGpx(gpxContent);
+		const totalDistance = calculateTotalDistance(locations);
+
+		const tripQuery = env.DB.prepare('UPDATE BikeTrips SET length = ? WHERE id = ?');
 
     const query = env.DB.prepare(
       'INSERT INTO BikeTripLocations (trip_id, latitude, longitude) VALUES (?1, ?2, ?3)'
     );
 
     const rows = await env.DB.batch([
+			tripQuery.bind(totalDistance, bikeTripsId),
       ...locations.map((location) =>
-        query.bind(bikeTripsId, location.latitute, location.longitude)
+        query.bind(bikeTripsId, location.latitude, location.longitude)
       ),
     ]);
 

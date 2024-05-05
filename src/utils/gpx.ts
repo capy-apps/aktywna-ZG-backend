@@ -26,7 +26,7 @@ export const parseGpx = (gpxString: string): Location[] => {
         const lon = parseFloat(point.lon);
 
         locations.push({
-          latitute: lat,
+          latitude: lat,
           longitude: lon
         });
       });

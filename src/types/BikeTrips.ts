@@ -10,7 +10,7 @@ export interface BikeTrips {
   created_at: number;
 }
 
-export interface BikeTripsRequest extends Omit<BikeTrips, 'id' | 'created_at'> {}
+export interface BikeTripsRequest extends Omit<BikeTrips, 'id' | 'created_at' | 'length'> {}
 
 export interface BikeTripsLocation extends Location {
   id: number;

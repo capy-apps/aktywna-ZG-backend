@@ -1,5 +1,6 @@
 import { Env } from '../types';
 import { BikePaths, BikePathsLocation, BikePathsRequest } from '../types/BikePaths';
+import { calculateTotalDistance } from '../utils/distance';
 import { parseGpx } from '../utils/gpx';
 
 export const BikePathsService = async (env: Env) => {
@@ -24,8 +25,8 @@ export const BikePathsService = async (env: Env) => {
 	};
 
 	const addBikePath = async (bikePath: BikePathsRequest): Promise<Response> => {
-		const query = await env.DB.prepare('INSERT INTO BikePaths (name, length) VALUES (?1, ?2)')
-			.bind(bikePath.name, bikePath.length)
+		const query = await env.DB.prepare('INSERT INTO BikePaths (name) VALUES (?)')
+			.bind(bikePath.name)
 			.run();
 
 		return Response.json({
@@ -36,13 +37,17 @@ export const BikePathsService = async (env: Env) => {
 
 	const addBikePathLocation = async (bikePathId: number, gpxContent: string): Promise<Response> => {
 		const locations = parseGpx(gpxContent);
+		const totalDistance = calculateTotalDistance(locations);
+
+    const pathQuery = env.DB.prepare('UPDATE BikePaths SET length = ? WHERE id = ?');
 
 		const query = env.DB.prepare(
 			'INSERT INTO BikePathLocations (path_id, latitude, longitude) VALUES (?1, ?2, ?3)'
 		);
 
 		const rows = await env.DB.batch([
-			...locations.map(location => query.bind(bikePathId, location.latitute, location.longitude)),
+      pathQuery.bind(totalDistance, bikePathId),
+			...locations.map(location => query.bind(bikePathId, location.latitude, location.longitude)),
 		]);
 
 		return Response.json({ message: 'Locations added successfully' });
