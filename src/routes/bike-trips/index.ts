@@ -29,4 +29,15 @@ bikeTripsRouter.post('/gpx/:id', async (request, env) => {
   return await addBikeTripsLocation(Number(request.params.id), content);
 });
 
+bikeTripsRouter.put('/:id', async (request, env) => {
+	const body = (await request.json()) as BikeTripsRequest;
+	const { updateBikeTrips } = await BikeTripsService(env);
+	return await updateBikeTrips(Number(request.params.id), body);
+});
+
+bikeTripsRouter.delete('/:id', async (request, env) => {
+	const { deleteBikeTrips } = await BikeTripsService(env);
+	return await deleteBikeTrips(Number(request.params.id));
+});
+
 export default bikeTripsRouter;

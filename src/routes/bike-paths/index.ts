@@ -23,4 +23,15 @@ bikePathsRouter.post('/gpx/:id', async (request, env) => {
   return await addBikePathLocation(Number(request.params.id), content);
 });
 
+bikePathsRouter.put('/:id', async (request, env) => {
+  const body = (await request.json()) as BikePathsRequest;
+  const { updateBikePath } = await BikePathsService(env);
+  return await updateBikePath(Number(request.params.id), body);
+});
+
+bikePathsRouter.delete('/:id', async (request, env) => {
+  const { deleteBikePath } = await BikePathsService(env);
+  return await deleteBikePath(Number(request.params.id));
+});
+
 export default bikePathsRouter;

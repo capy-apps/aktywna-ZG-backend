@@ -29,8 +29,40 @@ export const RepairStationsService = async (env: Env) => {
 		});
 	};
 
+	const updateRepairStation = async (
+		id: number,
+		repairStation: RepairStationRequest
+	): Promise<Response> => {
+		const query = await env.DB.prepare(
+			'UPDATE BikeRepairStations SET name = ?1, description = ?2, image = ?3, latitude = ?4, longitude = ?5 WHERE id = ?6'
+		)
+			.bind(
+				repairStation.name,
+				repairStation.description,
+				repairStation.image,
+				repairStation.latitude,
+				repairStation.longitude,
+				id
+			)
+			.run();
+
+		return Response.json({
+			id,
+			...repairStation,
+		});
+	};
+
+	const deleteRepairStation = async (id: number): Promise<Response> => {
+		const query = await env.DB.prepare('DELETE FROM BikeRepairStations WHERE id = ?1')
+			.bind(id)
+			.run();
+		return Response.json({ status: 'success' });
+	};
+
 	return {
 		getAllRepairStations,
 		addRepairStation,
+		updateRepairStation,
+		deleteRepairStation,
 	};
 };

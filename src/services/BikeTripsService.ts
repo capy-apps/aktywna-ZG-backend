@@ -66,10 +66,30 @@ export const BikeTripsService = async (env: Env) => {
     return Response.json({ message: 'Locations added successfully' });
   }
 
+	const updateBikeTrips = async (id: number, BikeTrips: BikeTripsRequest): Promise<Response> => {
+		const query = await env.DB.prepare(
+			'UPDATE BikeTrips SET name = ?1, difficulty = ?2, description = ?3, image = ?4 WHERE id = ?5'
+		)
+			.bind(BikeTrips.name, BikeTrips.difficulty, BikeTrips.description, BikeTrips.image, id)
+			.run();
+
+		return Response.json({
+			id,
+			...BikeTrips,
+		});
+	}
+
+	const deleteBikeTrips = async (id: number): Promise<Response> => {
+		const query = await env.DB.prepare('DELETE FROM BikeTrips WHERE id = ?1').bind(id).run();
+		return Response.json({ status: 'success' });
+	};
+
 	return {
 		getAllBikeTrips,
     getBikeTrips,
 		addBikeTrips,
     addBikeTripsLocation,
+		updateBikeTrips,
+		deleteBikeTrips,
 	};
 };

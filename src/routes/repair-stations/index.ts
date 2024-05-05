@@ -14,4 +14,15 @@ repairStationsRouter.post('/', async (request, env) => {
   return await addRepairStation(body);
 });
 
+repairStationsRouter.put('/:id', async (request, env) => {
+  const body = (await request.json());
+  const { updateRepairStation } = await RepairStationsService(env);
+  return await updateRepairStation(Number(request.params.id), body);
+});
+
+repairStationsRouter.delete('/:id', async (request, env) => {
+  const { deleteRepairStation } = await RepairStationsService(env);
+  return await deleteRepairStation(Number(request.params.id));
+});
+
 export default repairStationsRouter;

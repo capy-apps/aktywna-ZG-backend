@@ -14,4 +14,15 @@ eventsRouter.post('/', async (request, env) => {
   return await addEvent(body);
 });
 
+eventsRouter.put('/:id', async (request, env) => {
+  const body = (await request.json());
+  const { updateEvent } = await EventService(env);
+  return await updateEvent(Number(request.params.id), body);
+});
+
+eventsRouter.delete('/:id', async (request, env) => {
+  const { deleteEvent } = await EventService(env);
+  return await deleteEvent(Number(request.params.id));
+});
+
 export default eventsRouter;

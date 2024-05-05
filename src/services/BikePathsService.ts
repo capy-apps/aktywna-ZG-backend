@@ -53,9 +53,29 @@ export const BikePathsService = async (env: Env) => {
 		return Response.json({ message: 'Locations added successfully' });
 	};
 
+	const updateBikePath = async (id: number, bikePath: BikePathsRequest): Promise<Response> => {
+		const query = await env.DB.prepare('UPDATE BikePaths SET name = ? WHERE id = ?')
+			.bind(bikePath.name, id)
+			.run();
+
+		return Response.json({
+			id,
+			...bikePath,
+		});
+	}
+
+	const deleteBikePath = async (id: number): Promise<Response> => {
+		const query = await env.DB.prepare('DELETE FROM BikePaths WHERE id = ?')
+			.bind(id)
+			.run();
+		return Response.json({ status: 'success' });
+	};
+
 	return {
 		getAllBikePaths,
 		addBikePath,
 		addBikePathLocation,
+		updateBikePath,
+		deleteBikePath,
 	};
 };
