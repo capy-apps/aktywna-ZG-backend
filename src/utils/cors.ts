@@ -13,3 +13,20 @@ export const addCorsHeaders = (response: Response): Response => {
 		headers: headers,
 	});
 };
+
+export const handleOptionsRequest = (request: Request): Response => {
+	const headers = new Headers();
+
+	headers.set('Access-Control-Allow-Origin', '*');
+	headers.set('Access-Control-Allow-Methods', 'GET, HEAD, POST, OPTIONS');
+	headers.set('Access-Control-Max-Age', '86400');
+
+	const accessControlRequestHeaders = request.headers.get('Access-Control-Request-Headers');
+	if (accessControlRequestHeaders) {
+		headers.set('Access-Control-Allow-Headers', accessControlRequestHeaders);
+	}
+
+	return new Response(null, {
+		headers,
+	});
+}

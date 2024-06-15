@@ -1,8 +1,11 @@
 DROP TABLE IF EXISTS BikePathLocations;
 DROP TABLE IF EXISTS BikePaths;
 DROP TABLE IF EXISTS BikeTripLocations;
+DROP TABLE IF EXISTS BikeTripsPhotos;
+DROP TABLE IF EXISTS BikeTripsRatings;
 DROP TABLE IF EXISTS BikeTrips;
 DROP TABLE IF EXISTS BikeRepairStations;
+DROP TABLE IF EXISTS EventParticipants;
 DROP TABLE IF EXISTS Events;
 
 CREATE TABLE IF NOT EXISTS BikePaths (
@@ -21,11 +24,11 @@ CREATE TABLE IF NOT EXISTS BikePathLocations (
 
 CREATE TABLE IF NOT EXISTS BikeTrips (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  public BOOLEAN DEFAULT 0,
   name TEXT,
   length INTEGER,
   difficulty TEXT,
   description TEXT,
-  image TEXT,
   created_at REAL
 );
 
@@ -37,11 +40,27 @@ CREATE TABLE IF NOT EXISTS BikeTripLocations (
   FOREIGN KEY(trip_id) REFERENCES BikeTrips(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS BikeTripsPhotos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  public BOOLEAN DEFAULT 0,
+  trip_id INTEGER,
+  image BLOB,
+  created_at REAL,
+  FOREIGN KEY(trip_id) REFERENCES BikeTrips(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS BikeTripsRatings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  trip_id INTEGER,
+  rating INTEGER,
+  FOREIGN KEY(trip_id) REFERENCES BikeTrips(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS BikeRepairStations (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   description TEXT,
-  image TEXT,
+  image BLOB,
   latitude REAL,
   longitude REAL,
   created_at REAL
@@ -51,7 +70,14 @@ CREATE TABLE IF NOT EXISTS Events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT,
   description TEXT,
-  image TEXT,
+  image BLOB,
   date REAL,
   created_at REAL
+);
+
+CREATE TABLE IF NOT EXISTS EventParticipants (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_id INTEGER,
+  user_uuid TEXT,
+  FOREIGN KEY(event_id) REFERENCES Events(id) ON DELETE CASCADE
 );
