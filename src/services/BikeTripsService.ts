@@ -4,6 +4,7 @@ import { BikeTrips, BikeTripsRequest } from '../types/BikeTrips';
 import { Location } from '../types/Location';
 import { calculateTotalDistance } from '../utils/distance';
 import { parseGpx } from '../utils/gpx';
+import { arrayBufferToBase64 } from '../utils/buffer';
 
 export const BikeTripsService = async (env: Env) => {
 	const getAllBikeTrips = async (isAdmin: boolean): Promise<Response> => {
@@ -144,15 +145,6 @@ export const BikeTripsService = async (env: Env) => {
 
 		const imageBuffer = arrayBufferToBase64(image.image);
 		return new Response(imageBuffer);
-	};
-
-	const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
-		const bytes = new Uint8Array(buffer);
-		let binary = '';
-		for (let i = 0; i < bytes.byteLength; i++) {
-			binary += String.fromCharCode(bytes[i]);
-		}
-		return btoa(binary);
 	};
 
 	const addPhoto = async (
