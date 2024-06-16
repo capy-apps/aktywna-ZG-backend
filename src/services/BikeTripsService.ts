@@ -58,17 +58,27 @@ export const BikeTripsService = async (env: Env) => {
 		const ratingResult = await ratingQuery.bind(bikeTripsId).first<{ rating: number }>();
 
 		//pobranie zdjęć trasy rowerowej
-		const photoQuery = env.DB.prepare('SELECT id, public FROM BikeTripsPhotos WHERE trip_id = ?');
+		const photoQuery = env.DB.prepare(
+			'SELECT id, public, image FROM BikeTripsPhotos WHERE trip_id = ?'
+		);
 		const { results: photoResults } = await photoQuery
 			.bind(bikeTripsId)
-			.all<{ id: number; public: number }>();
+			.all<{ id: number; public: number; image: ArrayBuffer }>();
 
-		//połączenie wszystkich danych w jeden obiekt i zwrócenie odpowiedzi
+		const photos = photoResults
+			.filter(photo => photo.public === 1)
+			.map(photo => {
+				return {
+					id: photo.id,
+					image: arrayBufferToBase64(photo.image),
+				};
+			});
+
 		const BikeTripsWithDetails = {
 			...bikeTrips,
 			locations: locationResults,
 			rating: ratingResult?.rating,
-			photos: photoResults.filter(photo => photo.public === 1).map(photo => photo.id),
+			photos,
 		};
 
 		return Response.json(BikeTripsWithDetails);
@@ -173,11 +183,11 @@ export const BikeTripsService = async (env: Env) => {
 		return new Response(imageBuffer);
 	};
 
-	//funkcja zwracająca odpowiedź ze wszystkimi zdjęciami
-	const getAllPhotos = async (): Promise<Response> => {
-		//pobranie wszystkich zdjęć z bazy danych
-		const query = await env.DB.prepare('SELECT * FROM BikeTripsPhotos');
-		//przgotowanie odpowiedzi i wysłanie jej
+	//funkcja zwracająca odpowiedź ze wszystkimi prywatnymi zdjęciami ktore nie są publiczne
+	const getAllPrivatePhotos = async (): Promise<Response> => {
+		//pobranie wszystkich prywatnych zdjęć z bazy danych
+		const query = await env.DB.prepare('SELECT * FROM BikeTripsPhotos WHERE public = 0');
+		//przygotowanie odpowiedzi i wysłanie jej
 		const { results } = await query.all<{
 			id: number;
 			trip_id: number;
@@ -247,7 +257,7 @@ export const BikeTripsService = async (env: Env) => {
 		addBikeTripsLocation,
 		updateBikeTrips,
 		deleteBikeTrips,
-		getAllPhotos,
+		getAllPrivatePhotos,
 		getPhoto,
 		addPhoto,
 		deletePhoto,

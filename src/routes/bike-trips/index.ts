@@ -15,10 +15,10 @@ bikeTripsRouter.get('/', async (request, env) => {
 
 //dodanie ścieżki do pobierania wszystkich zdjęć
 bikeTripsRouter.get('/photos', async (request, env) => {
-	const { getAllPhotos } = await BikeTripsService(env);
+	const { getAllPrivatePhotos } = await BikeTripsService(env);
 	const isAdmin = isAdminRequest(request, env);
 	if (!isAdmin) return new Response('Unauthorized', { status: 401 });
-	return await getAllPhotos();
+	return await getAllPrivatePhotos();
 });
 
 //dodanie ścieżki do pobierania trasy rowerowej po id
