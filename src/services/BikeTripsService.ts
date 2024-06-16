@@ -51,16 +51,27 @@ export const BikeTripsService = async (env: Env) => {
 		);
 		const ratingResult = await ratingQuery.bind(bikeTripsId).first<{ rating: number }>();
 
-		const photoQuery = env.DB.prepare('SELECT id, public FROM BikeTripsPhotos WHERE trip_id = ?');
+		const photoQuery = env.DB.prepare(
+			'SELECT id, public, image FROM BikeTripsPhotos WHERE trip_id = ?'
+		);
 		const { results: photoResults } = await photoQuery
 			.bind(bikeTripsId)
-			.all<{ id: number; public: number }>();
+			.all<{ id: number; public: number; image: ArrayBuffer }>();
+
+		const photos = photoResults
+			.filter(photo => photo.public === 1)
+			.map(photo => {
+				return {
+					id: photo.id,
+					image: arrayBufferToBase64(photo.image),
+				};
+			});
 
 		const BikeTripsWithDetails = {
 			...bikeTrips,
 			locations: locationResults,
 			rating: ratingResult?.rating,
-			photos: photoResults.filter(photo => photo.public === 1).map(photo => photo.id),
+			photos,
 		};
 
 		return Response.json(BikeTripsWithDetails);
@@ -148,8 +159,8 @@ export const BikeTripsService = async (env: Env) => {
 		return new Response(imageBuffer);
 	};
 
-	const getAllPhotos = async (): Promise<Response> => {
-		const query = await env.DB.prepare('SELECT * FROM BikeTripsPhotos');
+	const getAllPrivatePhotos = async (): Promise<Response> => {
+		const query = await env.DB.prepare('SELECT * FROM BikeTripsPhotos WHERE public = 0');
 		const { results } = await query.all<{
 			id: number;
 			trip_id: number;
@@ -210,7 +221,7 @@ export const BikeTripsService = async (env: Env) => {
 		addBikeTripsLocation,
 		updateBikeTrips,
 		deleteBikeTrips,
-		getAllPhotos,
+		getAllPrivatePhotos,
 		getPhoto,
 		addPhoto,
 		deletePhoto,

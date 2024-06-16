@@ -12,10 +12,10 @@ bikeTripsRouter.get('/', async (request, env) => {
 });
 
 bikeTripsRouter.get('/photos', async (request, env) => {
-	const { getAllPhotos } = await BikeTripsService(env);
+	const { getAllPrivatePhotos } = await BikeTripsService(env);
 	const isAdmin = isAdminRequest(request, env);
 	if (!isAdmin) return new Response('Unauthorized', { status: 401 });
-	return await getAllPhotos();
+	return await getAllPrivatePhotos();
 });
 
 bikeTripsRouter.get('/:id', async (request, env) => {
