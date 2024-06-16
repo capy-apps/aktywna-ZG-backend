@@ -148,6 +148,26 @@ export const BikeTripsService = async (env: Env) => {
 		return new Response(imageBuffer);
 	};
 
+	const getAllPhotos = async (): Promise<Response> => {
+		const query = await env.DB.prepare('SELECT * FROM BikeTripsPhotos');
+		const { results } = await query.all<{
+			id: number;
+			trip_id: number;
+			public: number;
+			image: ArrayBuffer;
+		}>();
+		return Response.json(
+			results.map(photo => {
+				return {
+					id: photo.id,
+					trip_id: photo.trip_id,
+					public: photo.public,
+					photo: arrayBufferToBase64(photo.image),
+				};
+			})
+		);
+	};
+
 	const addPhoto = async (
 		tripId: number,
 		image: ArrayBuffer,
@@ -169,14 +189,18 @@ export const BikeTripsService = async (env: Env) => {
 	};
 
 	const publicBikeTrip = async (id: number): Promise<Response> => {
-		const query = await env.DB.prepare('UPDATE BikeTrips SET public = 1 WHERE id = ?').bind(id).run();
+		const query = await env.DB.prepare('UPDATE BikeTrips SET public = 1 WHERE id = ?')
+			.bind(id)
+			.run();
 		return Response.json({ status: 'success' });
-	}
+	};
 
 	const publicPhoto = async (id: number): Promise<Response> => {
-		const query = await env.DB.prepare('UPDATE BikeTripsPhotos SET public = 1 WHERE id = ?').bind(id).run();
+		const query = await env.DB.prepare('UPDATE BikeTripsPhotos SET public = 1 WHERE id = ?')
+			.bind(id)
+			.run();
 		return Response.json({ status: 'success' });
-	}
+	};
 
 	return {
 		getAllBikeTrips,
@@ -186,6 +210,7 @@ export const BikeTripsService = async (env: Env) => {
 		addBikeTripsLocation,
 		updateBikeTrips,
 		deleteBikeTrips,
+		getAllPhotos,
 		getPhoto,
 		addPhoto,
 		deletePhoto,
