@@ -1,5 +1,6 @@
 import { Location } from '../types/Location';
 
+//Funkcja obliczająca odległość między dwoma punktami na podstawie ich współrzędnych geograficznych
 function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
 	const R = 6371;
 	const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -15,6 +16,7 @@ function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
 	return d;
 }
 
+//Funkcja obliczająca całkowitą odległość między punktami w trasie
 export function calculateTotalDistance(locations: Location[]): number {
 	let totalDistance = 0;
 	for (let i = 0; i < locations.length - 1; i++) {

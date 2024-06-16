@@ -1,5 +1,6 @@
 import { Location } from "./Location";
 
+//Typ trasy rowerowej
 export interface BikeTrips {
   id: number;
   public: boolean;
@@ -12,6 +13,7 @@ export interface BikeTrips {
 
 export interface BikeTripsRequest extends Omit<BikeTrips, 'id' | 'public' | 'created_at' | 'length'> {}
 
+//Typ lokalizacji na trasie rowerowej
 export interface BikeTripsLocation extends Location {
   id: number;
   trip_id: number;

@@ -1,4 +1,5 @@
 
+//Dodaje nagłówki CORS do odpowiedzi
 export const addCorsHeaders = (response: Response): Response => {
 	const headers = new Headers(response.headers);
 
@@ -14,6 +15,7 @@ export const addCorsHeaders = (response: Response): Response => {
 	});
 };
 
+//obsługa żądania HTTP OPTIONS dla CORS
 export const handleOptionsRequest = (request: Request): Response => {
 	const headers = new Headers();
 

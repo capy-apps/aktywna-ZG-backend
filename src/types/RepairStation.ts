@@ -1,4 +1,4 @@
-
+//typ dla stacji naprawy
 export interface RepairStation {
 	id: number;
 	name: string;
