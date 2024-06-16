@@ -71,4 +71,14 @@ bikeTripsRouter.delete('/photo/:id', async (request, env) => {
 	return await deletePhoto(Number(request.params.id));
 })
 
+bikeTripsRouter.put('/public/:id', async (request, env) => {
+	const { publicBikeTrip } = await BikeTripsService(env);
+	return await publicBikeTrip(Number(request.params.id));
+})
+
+bikeTripsRouter.put('/photo/public/:id', async (request, env) => {
+	const { publicPhoto } = await BikeTripsService(env);
+	return await publicPhoto(Number(request.params.id));
+})
+
 export default bikeTripsRouter;
